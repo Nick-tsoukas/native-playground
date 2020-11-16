@@ -16,7 +16,8 @@ import {
   Text,
   StatusBar,
   TextInput,
-  Button
+  Button,
+  FlatList
 } from 'react-native';
 
 import {
@@ -24,18 +25,36 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App = () => {
-  const [enteredGoal, setEnteredGoal] = useState();
+  const [enteredGoal, setEnteredGoal] = useState('');
+  const [goals, setGoals] = useState([]);
+
+  const goalInput = (enteredText) => {
+    setEnteredGoal(enteredText);
+  }
+
+   const goalHandler = async () => {
+   const goal = await setGoals(currentGoals => [...currentGoals, { key: Math.random().toString(), value: enteredGoal }]);
+   setEnteredGoal('');
+   
+  }
+
   return (
     <View style={styles.screen}>
 
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Course Goal" style={styles.input} />
-        <Button title="Click Me" />
+        <TextInput placeholder="Course Goal" style={styles.input} onChangeText={goalInput} value={enteredGoal} />
+        <Button onPress={goalHandler} title="Click Me" />
       </View>
 
-      <View>
+      <FlatList
+      data={goals}
+      renderItem={itemData => (
+        <View style={styles.listItems}>
+          <Text>{itemData.item.value}</Text>
+        </View>
+      )}
 
-      </View>
+       />
     </View>
   );
 };
@@ -54,6 +73,13 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     width: 200,
     padding: 10
+  },
+  listItems : {
+    padding: 10,
+    marginTop: 10,
+    borderColor: 'black',
+    borderWidth: 1,
+    backgroundColor: '#ccc'
   }
 });
 
