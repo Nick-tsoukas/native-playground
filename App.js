@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import GoalItem from './GoalItem';
 import GoalInput from './GoalInput';
 
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -27,13 +28,24 @@ import {
   Colors
 } from 'react-native/Libraries/NewAppScreen';
 
+let counter = 1;
+
+
 const App = () => {
   const [goals, setGoals] = useState([]);
 
-
    const goalHandler = async (text) => {
-   const goal = await setGoals(currentGoals => [...currentGoals, { key: Math.random().toString(), value: text }]);
-   
+    const goal = await setGoals(currentGoals => [...currentGoals, { key: counter.toString() , value: text }]);
+    counter++;
+  }
+
+  const removeHandler = (goalId) => {
+    console.log('this is the remove function')
+    setGoals((currentGoals) => {
+      return currentGoals.filter((goal) => {
+        return goal.key !== goalId;
+      });
+    })
   }
 
   return (
@@ -43,7 +55,7 @@ const App = () => {
 
       <FlatList
       data={goals}
-      renderItem={itemData => ( <GoalItem title={itemData.item.value} />)}
+      renderItem={itemData => ( <GoalItem removeHandler={removeHandler} id={itemData.item.key} title={itemData.item.value} />)}
        />
     </View>
   );
